@@ -183,6 +183,27 @@ class WpLHLAdminUiForm {
         echo '<input type="text" name="'. esc_attr($input_name) .'" value="' . esc_attr($value) . '" class="regular-text"' . esc_attr($disabled_attribute) . '>';
     }
 
+    /**
+     * Example usage
+     *  $options = get_option( 'tgentg_generator_options' );
+	 *	$option_name = "tgentg_generator_options";
+	 *	$option_id = "content_region_selector";
+     *
+	 *	LHL_Admin_UI_TGEN::admin_text_input(
+	 *		$options,
+	 *		$option_name,
+	 *		$option_id
+	 *	);
+     */
+    public static function email_input(array $options, string $option_name, string $options_id, bool $is_disabled = false ) {
+
+        $input_name = "{$option_name}[{$options_id}]";
+        $disabled_attribute = $is_disabled ? " disabled='disabled'" : "";
+        $value = ( isset( $options[$options_id] ) ) ? $options[$options_id] : '';
+
+        echo '<input type="email" name="'. esc_attr($input_name) .'" value="' . esc_attr($value) . '" class="regular-text"' . esc_attr($disabled_attribute) . '>';
+    }
+
 
     /****************************************************************************************************************************
      * Textarea
