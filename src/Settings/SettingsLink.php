@@ -1,8 +1,9 @@
 <?php
 
-class WpLHLAdminSettingsLink{
+namespace WpLHLAdminUi\Settings;
 
-    
+class SettingsLink{
+
     private $plugin_name;
     private $text_domain = "";
     private $path_to_settings = "#";

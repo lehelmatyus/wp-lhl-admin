@@ -1,6 +1,8 @@
 <?php
 
-class WpLHLAdminUiForm {
+namespace WpLHLAdminUi\Forms;
+
+class AdminForm {
 
 
     static $active_license_key_text = "You have an active License Key. This feature is avaialble for you.";

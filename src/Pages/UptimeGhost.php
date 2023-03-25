@@ -1,6 +1,8 @@
 <?php
 
-class WpLHLAdminUptimeGhost {
+namespace WpLHLAdminUi\Pages;
+
+class UptimeGhost {
 
     public static function uptimeGhostPage(){
         echo "<div>";
@@ -59,9 +61,6 @@ class WpLHLAdminUptimeGhost {
         settings_fields( 'uptime_ghost_options' );
         do_settings_sections( 'uptime_ghost_options' );
         submit_button();
-
-
-
 
         // echo "<div>";
         //     echo "<h2>";

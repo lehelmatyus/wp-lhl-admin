@@ -1,0 +1,27 @@
+{
+    "name": "lehelmatyus/wplhladminui",
+    "type": "library",
+    "description": "WordPress Admin UI tools",
+    "keywords": ["wordpress","toolkit"],
+    "homepage": "http://lehelmatyus.com/wplhladminui",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lehel Matyus",
+            "email": "contact@lehelmatyus.com",
+            "homepage": "http://lehelmatyus.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "WPLHLAdminUi\\": "src/"
+        },
+        "files": [
+            "src/WPLHLAdminUi.php"
+        ]
+    }
+}
