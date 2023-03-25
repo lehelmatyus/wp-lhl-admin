@@ -1,5 +1,5 @@
 {
-    "name": "lehelmatyus/wplhladminui",
+    "name": "lehelmatyus/wp-lhl-admin-ui",
     "type": "library",
     "description": "WordPress Admin UI tools",
     "keywords": ["wordpress","toolkit"],
@@ -23,5 +23,6 @@
         "files": [
             "src/WPLHLAdminUi.php"
         ]
-    }
+    },
+    "minimum-stability": "dev"
 }
