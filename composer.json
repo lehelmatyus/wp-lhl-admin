@@ -3,7 +3,7 @@
     "type": "library",
     "description": "WordPress Admin UI tools",
     "keywords": ["wordpress","toolkit"],
-    "homepage": "http://lehelmatyus.com/wplhladminui",
+    "homepage": "http://lehelmatyus.com/WpLHLAdminUi",
     "license": "MIT",
     "authors": [
         {
@@ -18,10 +18,10 @@
     },
     "autoload": {
         "psr-4": {
-            "WPLHLAdminUi\\": "src/"
+            "WpLHLAdminUi\\": "src/"
         },
         "files": [
-            "src/WPLHLAdminUi.php"
+            "src/WpLHLAdminUi.php"
         ]
     },
     "minimum-stability": "dev"
