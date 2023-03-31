@@ -139,7 +139,7 @@ class AdminForm {
 	 *	$option_name = "tgentg_generator_options";
 	 *	$option_id = "content_region_selector";
      *
-	 *	LHL_Admin_UI_TGEN::form_text_input__active_key_required(
+	 *	AdminForm::form_text_input__active_key_required(
      *      true,
 	 *		$options,
 	 *		$option_name,
@@ -170,7 +170,7 @@ class AdminForm {
 	 *	$option_name = "tgentg_generator_options";
 	 *	$option_id = "content_region_selector";
      *
-	 *	LHL_Admin_UI_TGEN::admin_text_input(
+	 *	AdminForm::admin_text_input(
 	 *		$options,
 	 *		$option_name,
 	 *		$option_id
@@ -191,7 +191,7 @@ class AdminForm {
 	 *	$option_name = "tgentg_generator_options";
 	 *	$option_id = "content_region_selector";
      *
-	 *	LHL_Admin_UI_TGEN::admin_text_input(
+	 *	AdminForm::admin_text_input(
 	 *		$options,
 	 *		$option_name,
 	 *		$option_id
@@ -206,6 +206,28 @@ class AdminForm {
         echo '<input type="email" name="'. esc_attr($input_name) .'" value="' . esc_attr($value) . '" class="regular-text"' . esc_attr($disabled_attribute) . '>';
     }
 
+
+    public static function email_input_multi(array $options, string $option_name, string $options_id, bool $is_disabled = false, $rows = 3, $cols = 50 ) {
+
+        $input_name = "{$option_name}[{$options_id}]";
+        $disabled_attribute = $is_disabled ? " disabled='disabled'" : "";
+        $value = ( isset( $options[$options_id] ) ) ? $options[$options_id] : '';
+
+        $email_array = explode(',', $value);
+        // Remove none email
+        foreach ($email_array as $key => $email) {
+            if(!is_email(trim($email))){
+                unset($email_array[$key]);
+            }else{
+                $email_array[$key] = trim($email);
+            }
+        }
+        $value = implode(', ', $email_array);
+
+        // echo '<textarea id="'. esc_attr($options_id) .'" name="'. esc_attr($input_name) .'" value="' . esc_attr($value) . '" class="regular-text"' . esc_attr($disabled_attribute) . '>';
+		echo '<textarea id="'. esc_attr($options_id) .'" name="'. esc_attr($input_name) .'" rows="' . esc_attr($rows) . '" cols="' . esc_attr($cols) . '"' . esc_attr($disabled_attribute) . '>' . esc_html($value) . '</textarea>';
+
+    }
 
     /****************************************************************************************************************************
      * Textarea
