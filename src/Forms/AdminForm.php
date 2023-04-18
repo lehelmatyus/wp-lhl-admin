@@ -266,10 +266,17 @@ class AdminForm {
      * Generate a Button
      * that has a message field next to it to display message responsens returned by ajax
      */
-    public static function button($classes = [], $title= "Empty", $id = '', $repsoneHTML = '') {
+    public static function button($classes = [], $title = "Empty", $id = '', $disabled = false, $onclick_event_name = '', $attr = [], $msg = []) {
 
-        $output = "";
-        $attr = [];
+        if (empty($msg)) {
+            $msg = [
+                "wait" => "Script Running Please Wait...",
+                "success" => "Success!",
+                "error" => "Error 100"
+            ];
+        }
+
+        $def_atts = [];
         $def_classes=[
             'button',
             'button-default'
@@ -277,68 +284,100 @@ class AdminForm {
 
         /**
          * Classes
-         * Merge incoming classes with default classes
          */
 
         if (is_array($classes)){
-            // sanitize if array
-            $classes = array_map(function ($a) { return sanitize_html_class($a); }, $classes);
-            // merge with defaults
-            $classes = array_merge($classes,$def_classes);            
-            $classes_string = join( ' ', $classes );
+            // is array A-OK
         }elseif (is_string($classes)){
-            // as is string
-            $classes_string = join( ' ', $classes );
-            $classes_string = $classes_string . " " . $classes;
-        }      
+            $classes = explode(" ",$classes);
+        }else{
+            // bad value
+            $classes = [];
+        }
+        // sanitize array
+        $classes = array_map(function ($a) { return sanitize_html_class($a); }, $classes);
+        // merge with defaults
+        $classes = array_merge($classes, $def_classes);
+
+        /**
+         * Atts
+         */
+
+        if (is_array($attr)){
+        }elseif (is_string($attr)){
+            $attr = explode(" ",$attr);
+        }else{
+            $attr = [];
+        }
+        // sanitize array
+        $attr = array_map(function ($a) { return esc_attr($a); }, $attr);
+        // merge with defaults
+        $attr = array_merge($attr, $def_atts); 
+
+
+        /**
+         * is disabled?
+         */
+        if(!empty($disabled)){
+            $attr[] = 'disabled';
+        }
+
+        /**
+         * Add Click Event
+         */
+        if(!empty($onclick_event_name)){
+            $onclick_attr = " onclick=" . $onclick_event_name . "(event)";
+        }else{
+            $onclick_attr = '';
+        }
+
+        /**
+         * Aggregate all classes and attributes
+         */
         $classes_string = join( ' ', $classes );
-
-
-        /**
-         * Add Clicke Event
-         */
-        // if(!empty($eventname)){
-        //     $evet = $eventname . "(event)";
-        //     $attr[] = 'onclick="' . $evet . '"';
-        // }
-
-        /**
-         * Get
-         */
         $attr_string = join( ' ', $attr );
 
-        echo "<div class='lhl-admin-button__container " . esc_attr($classes[0]) . "__container'>";
-            echo sprintf( '<button id="%s" class="%s" %s>%s</button>', esc_attr($id), esc_attr($classes_string), esc_attr($attr_string), esc_attr($title) );
-            echo "<span class='lhl-admin-button__message " . esc_attr($classes[0]) . "__message'>";
+        /**
+         * Output
+         */
+        echo "<div class='lhl-admin-button__container " . esc_attr($id) . "__container'>";
+            echo sprintf( '<button id="%s" class="%s" %s%s>%s</button>',
+                            esc_attr($id),
+                            esc_attr($classes_string),
+                            esc_attr($attr_string),
+                            esc_attr($onclick_attr),
+                            esc_attr($title) 
+                        );
+
+            echo sprintf( "<span class='%s__msg lhl__p_5 lhl__btn_msg' data-wait-msg='%s' data-success-msg='%s' data-error-msg='%s'>",
+                esc_attr($id),
+                esc_html($msg['wait']),
+                esc_html($msg['success']),
+                esc_html($msg['error']),
+            );
             echo "</span>";
-            echo "<div class='lhl-admin-button__response " . esc_attr($classes[0]) . "__response empty'>";
-				
-                
-                echo "<p>";
-                echo __( 'Direct your TNEW website to grab the Template file from here:', 'tgen-template-generator' );
-                echo "</p>";
-
-                echo "<p class='lhl_p'>";
-                echo "<input type='text' name='' value='' class='regular-text tgentg_generate_button__template' readonly>";
-                echo "</p>";
-
-                echo "<p>";
-                echo __( 'Check out the generated template:', 'tgen-template-generator' );
-                echo "</p>";
-
-                echo "<p>";
-                    echo "<a href='#' target='_blank' class='tgentg_generate_button__preview'>";
-                        echo __( 'Preview Template Here', 'tgen-template-generator' );
-                    echo "</a>";
-                echo "</p>";
-                
-
-            echo "</div>";
         echo "</div>";
         
 	}
 
+    public static function button__active_key_required($license_key_valid, $classes = [], $title = "Empty", $id = '', $disabled = false, $onclick_event_name = '', $attr = [], $msg = []) {
 
+        if ($license_key_valid){
+            echo '<div class="lhl__alowed_box">';
+            echo '<p class="lhl__license_notify_text">' . esc_html( self::$active_license_key_text ) . '</p>';
+            // $disabled = $disabled;
+        }else{
+            echo '<div class="lhl__restricted_box">';
+            echo '<p class="lhl__license_notify_text">' . esc_html( self::$inactive_license_key_text ) . '</p>';
+            $disabled = true;
+        }
+        echo '<br/>';
+        
+        self::button($classes, $title, $id, $disabled, $onclick_event_name, $attr, $msg);
+
+        echo '</div>';
+
+    }
 
 
     /****************************************************************************************************************************
