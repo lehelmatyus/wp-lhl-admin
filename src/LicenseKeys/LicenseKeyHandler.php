@@ -3,9 +3,9 @@
 namespace WpLHLAdminUi\LicenseKeys;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 
 class LicenseKeyHandler {
-
 
     protected $version;
     protected $plugin_name;
@@ -56,7 +56,7 @@ class LicenseKeyHandler {
 	protected $plugin_purchase_link_text;
 		
     public function __construct( 
-            LicenseKeyData $data
+		LicenseKeyDataInterface $data
 		) {
 
 		$this->host = trailingslashit($data->get_license_host());
@@ -86,9 +86,9 @@ class LicenseKeyHandler {
 
 		$this->g_client = new Client([
 			// Base URI is used with relative requests
-			'base_uri' => $this->$host,
+			'base_uri' => $this->host,
 			// You can set any number of default request options.
-			'timeout'  => 2.0,
+			'timeout'  => 5.0,
 		]);
 		
     }
@@ -284,32 +284,82 @@ class LicenseKeyHandler {
 		}
 
 		return $diff_days;
-	
 	}
 
+	public function __comm_key_action($key_to_activate, string $action){
+
+		$actions = ["validate", "activate", "deactivate"];
+		if(!in_array($action, $actions)){
+			return new LicenseKeyHandlerError(
+				"no_such_action",
+				$this->get_message("no_such_action"),
+			);
+				
+		}
+
+		if(empty($key_to_activate)){
+			return new LicenseKeyHandlerError(
+				"key_is_empty",
+				$this->get_message("key_is_empty"),
+			);
+		}
+
+		try {
+			
+			$response = $this->g_client->request(
+				'GET', 
+				'/wp-json/lmfwc/v2/licenses/' . $action . '/' . $key_to_activate,
+				[
+					'query' => [
+						'consumer_key' => $this->consumer_key,
+						'consumer_secret' => $this->consumer_secret,
+					],
+					'http_errors' => false // Dont throw error on 404 or 500 https://docs.guzzlephp.org/en/stable/request-options.html#http-errors
+				]
+			);
+		} catch (ConnectException $e){
+			$response = $e->getHandlerContext();
+			error_log(print_r($response,true));
+			return new LicenseKeyHandlerError(
+				"connection_lost"
+				($response['error']) ?? $this->get_message("connection_lost"),
+			);
+		}
+
+		$response_code = $response->getStatusCode();
+
+		if(
+			$response_code == 200 || 
+			$response_code == 404
+		){
+
+			$body_content = $response->getBody()->getContents();
+			$body_content = json_decode($body_content);
+
+			if (!(json_last_error() === JSON_ERROR_NONE)) {
+				return new LicenseKeyHandlerError(
+					"json_parse_error",
+					$this->get_message("json_parse_error"),
+				);
+			}
+
+			return $body_content;
+		}
+
+		return new LicenseKeyHandlerError(
+			'bad_response',
+			$this->get_message("bad_response"),
+		);
+
+	}
 	
 	/**
 	 * Communicate with server to Validate Key
 	 */
 	public function _comm__validate_key($key_to_activate) {
-
-		$response = $this->g_client->request(
-			'GET', 
-			'/wp-json/lmfwc/v2/licenses/validate/' . $key_to_activate,
-			[
-				'query' => [
-					'consumer_key' => $this->consumer_key,
-					'consumer_secret' => $this->consumer_secret,
-				]
-			]
-		);
-
-		$response_code = $response->getStatusCode();
-		$body = $response->getBody();
-
-		return $response;
-
+		return $this->__comm_key_action($key_to_activate, "validate");
 	}
+
 	public function _comm__validate_key_CURL($key_to_activate) {
 
 		if(empty($key_to_activate)) {
@@ -342,11 +392,18 @@ class LicenseKeyHandler {
 		}
 	}
 
+		
+	/**
+	 * Communicate with server to Validate Key
+	 */
+	public function _comm__activate_key($key_to_activate) {
+		return $this->__comm_key_action($key_to_activate, "activate");
+	}
 
 	/**
 	 * Communicate with server to Activate Key
 	 */
-	public function _comm__activate_key($key_to_activate) {
+	public function _comm__activate_key_CURL($key_to_activate) {
 
 		if(empty($key_to_activate)){
 			return false;
@@ -389,6 +446,10 @@ class LicenseKeyHandler {
 	 * Communicate with server to Activate Key
 	 */
 	public function _comm__deactivate_key($key_to_activate) {
+		return $this->__comm_key_action($key_to_activate, "deactivate");
+	}
+
+	public function _comm__deactivate_key_CURL($key_to_activate) {
 
 		if(empty($key_to_activate)){
 			return false;
@@ -509,8 +570,16 @@ class LicenseKeyHandler {
 				
 			case 'key_not_good':
 				$message = 'Key provided is not good.';
-				break;			
-			
+				break;
+		
+			case 'key_is_empty':
+				$message = 'Empty Key provided';
+				break;	
+		
+			case 'connection_lost':
+				$message = 'Unable to connect to License Server';
+				break;	
+
 			case 'json_parse_error':
 				$message = 'Invalid response from lehelmatyus.com. Please contact support.';
 				break;
@@ -525,6 +594,14 @@ class LicenseKeyHandler {
 
 			case 'unable_to_deactivate':
 				$message = 'Unable to deactivate.';
+				break;
+
+			case 'no_such_action':
+				$message = 'Bad path. No Such Action.';
+				break;
+
+			case 'bad_response':
+				$message = 'License server not responding';
 				break;
 			
 			default:

@@ -2,7 +2,7 @@
 
 namespace WpLHLAdminUi\LicenseKeys;
 
-interface LicenseKeyData {
+interface LicenseKeyDataInterface {
 
     /**
      * Host URL where the licanse needs to be verifies
@@ -46,7 +46,7 @@ interface LicenseKeyData {
     public function get_plugin_purchase_link_text();
 
     /**
-     * NAme of the plugin
+     * Name of the plugin
      */
     public function get_plugin_name();
     /**

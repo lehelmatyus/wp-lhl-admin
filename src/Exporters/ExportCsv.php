@@ -3,7 +3,7 @@
 namespace WpLHLAdminUi\Exporters;
 use WpLHLAdminUi\Helpers\Utils;
 
-class ExportCSV{
+class ExportCsv{
 
 
     private $log_directory = '';
