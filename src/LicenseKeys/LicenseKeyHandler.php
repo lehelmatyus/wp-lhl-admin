@@ -1,5 +1,7 @@
 <?php
 
+namespace WpLHLAdminUi\LicenseKeys;
+
 use GuzzleHttp\Client;
 
 class LicenseKeyHandler {
@@ -54,41 +56,23 @@ class LicenseKeyHandler {
 	protected $plugin_purchase_link_text;
 		
     public function __construct( 
-			$host,
-			$consumer_key,
-			$consumer_secret,
-
-			$name_for_options_general_bundle,
-			$name_for_license_key,
-			$name_for_options_license_bundle,
-			$name_for_license_key_date,
-			
-			$plugin_purchase_link_url,
-			$plugin_purchase_link_text,
-
-			$plugin_name,
-			$version = 1 
+            LicenseKeyData $data
 		) {
 
-		$this->host = trailingslashit($host);
-		$this->consumer_key = $consumer_key;
-		$this->consumer_secret = $consumer_secret;
+		$this->host = trailingslashit($data->get_license_host());
+		$this->consumer_key = $data->get_consumer_key();
+		$this->consumer_secret = $data->get_consumer_secret();
 
-		$this->name_for_options_general_bundle = $name_for_options_general_bundle;
-		$this->name_for_license_key = $name_for_license_key;
-		$this->name_for_options_license_bundle = $name_for_options_license_bundle;
-		$this->name_for_license_key_date = $name_for_license_key_date;
+		$this->name_for_options_general_bundle = $data->get_name_for_options_licensekey_bundle();
+		$this->name_for_license_key = $data->get_name_for_license_key();
+		$this->name_for_options_license_bundle = $data->get_name_for_options_licensedate_bundle();
+		$this->name_for_license_key_date = $data->get_name_for_license_key_date();
 
-		$this->$plugin_purchase_link_url = $plugin_purchase_link_url;
-		$this->$plugin_purchase_link_text = $plugin_purchase_link_text;
+		$this->plugin_purchase_link_url = $data->get_plugin_purchase_link_url();
+		$this->plugin_purchase_link_text = $data->get_plugin_purchase_link_text();
 
-		if(!empty($version)){
-			$this->version = $version;
-		}
-
-		if(!empty($plugin_name)){
-			$this->plugin_name = $plugin_name;
-		}        
+        $this->version = $data->get_version();
+        $this->plugin_name = $data->get_plugin_name();
 
 		/**
 		 * Options
