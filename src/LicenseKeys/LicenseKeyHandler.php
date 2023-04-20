@@ -637,7 +637,7 @@ class LicenseKeyHandler {
 
 	protected function __validate_date($date, $format = 'Y-m-d H:i:s') {
 		// Create the format date
-		$d = DateTime::createFromFormat($format, $date);
+		$d = \DateTime::createFromFormat($format, $date);
 	
 		// Return the comparison    
 		return $d && $d->format($format) === $date;
