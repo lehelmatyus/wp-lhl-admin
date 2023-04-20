@@ -15,7 +15,8 @@
     ],
     "require": {
         "php": ">=7.4.0",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "7.5.1",
+        "symfony/deprecation-contracts": "2.2"
     },
     "autoload": {
         "psr-4": {

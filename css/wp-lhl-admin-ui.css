@@ -17,6 +17,10 @@
  * Spacing 
  *******************************************/
 
+.lhl__p_5{
+    padding: 5px;
+}
+
 .lhl__pl_5{
     padding-left: 5px;
 }
@@ -29,6 +33,7 @@
     padding-left: 5px;
     padding-right: 5px;
 }
+
 
 /*  */
 
@@ -172,4 +177,11 @@
 .lhl__alowed_box .lhl__license_notify_text{
     /* color: rgba(70, 180, 80, 1); */
     color: rgba(32, 153, 43, 1);
+}
+
+/*******************************************
+ * Button Styles
+ *******************************************/
+.lhl__btn_msg{
+    display: inline-block;
 }
