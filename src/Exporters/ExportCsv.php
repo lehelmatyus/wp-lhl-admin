@@ -2,25 +2,20 @@
 
 namespace WpLHLAdminUi\Exporters;
 use WpLHLAdminUi\Helpers\Utils;
+use WpLHLAdminUi\Helpers\FolderPathUtil;
 
 class ExportCsv{
 
 
-    private $log_directory = '';
-    private $logs_url = '';
-    private $folder_name = '';
+    private $file_directory = '';
+    private $file_url = '';
 
     public function __construct($folder_name) {
 
-        $this->folder_name = $folder_name;
+        $folderPath = new FolderPathUtil($folder_name);
+        $this->file_directory = $folderPath->getDirectory();
+        $this->file_url = $folderPath->getUrl();
 
-        $uploads  = wp_upload_dir( null, false );
-		$logs_dir = $uploads['basedir'] . '/' . $folder_name;
-        $this->log_directory = $logs_dir;
-        
-        $upload_dir = wp_upload_dir();
-        $logs_url = set_url_scheme($upload_dir["baseurl"], 'https') . "/" . $folder_name;
-        $this->logs_url = $logs_url;
     }
 
 
@@ -61,7 +56,7 @@ class ExportCsv{
         // require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
         // require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
         // $fileSystemDirect = new WP_Filesystem_Direct(false);
-        // $fileSystemDirect->rmdir($this->log_directory, true);
+        // $fileSystemDirect->rmdir($this->file_directory, true);
         
     }
     
@@ -71,22 +66,22 @@ class ExportCsv{
          * Prepare
          */
         
-         $logs_dir = $this->log_directory;
+         $file_dir = $this->file_directory;
 
-		if ( ! is_dir( $logs_dir ) ) {
-			mkdir( $logs_dir, 0755, true );
+		if ( ! is_dir( $file_dir ) ) {
+			mkdir( $file_dir, 0755, true );
 		}
 
-        if ( ! file_exists($logs_dir)) {
+        if ( ! file_exists($file_dir)) {
             return false;
         }
 
         /**
          * Create an index.html to avoid directory listing.
          */
-        if (!file_exists($logs_dir . '/index.html')) {
+        if (!file_exists($file_dir . '/index.html')) {
             @file_put_contents(
-                $logs_dir . '/index.html',
+                $file_dir . '/index.html',
                 '<!-- Prevent the directory listing. -->'
             );
         }
@@ -109,7 +104,7 @@ class ExportCsv{
             }
 
             @file_put_contents(
-                $logs_dir . '/.htaccess',
+                $file_dir . '/.htaccess',
                 ''
             );
             $htaccess_array = [];
@@ -119,7 +114,7 @@ class ExportCsv{
             $htaccess_array[] = "RewriteRule .* - [F,L]";
             $htaccess_array[] = "</IfModule>";
 
-            $htaccess_fhandle = @fopen($logs_dir . '/.htaccess', 'a');
+            $htaccess_fhandle = @fopen($file_dir . '/.htaccess', 'a');
             $htaccess_ftext = implode("\n", $htaccess_array);
             $written = @fwrite($htaccess_fhandle, "\n" . $htaccess_ftext . "\n");
             @fclose($htaccess_fhandle);
@@ -130,7 +125,7 @@ class ExportCsv{
          * Write the file
          */
 
-		$file_handle = fopen( $logs_dir . '/' . $title, 'w' );
+		$file_handle = fopen( $file_dir . '/' . $title, 'w' );
 
         // create keys as columns
         // standardize data so all items contain all keys
@@ -144,7 +139,7 @@ class ExportCsv{
 
         fclose( $file_handle );
 
-		return $this->logs_url . "/" . $title;
+		return $this->file_url . "/" . $title;
 
     }
 
