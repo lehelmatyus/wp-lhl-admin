@@ -2,15 +2,13 @@
 
 namespace WpLHLAdminUi\Settings;
 
-class SettingsLink
-{
+class SettingsLink {
 
     private $plugin_name;
     private $text_domain = "";
     private $path_to_settings = "#";
 
-    public function __construct($plugin_name, $text_domain, $path_to_settings)
-    {
+    public function __construct($plugin_name, $text_domain, $path_to_settings) {
         $this->plugin_name = $plugin_name;
         $this->text_domain = $text_domain;
         $this->path_to_settings = $path_to_settings;
@@ -24,8 +22,7 @@ class SettingsLink
      *
      * @return array
      */
-    public function add_settings_link($links, $file)
-    {
+    public function add_settings_link($links, $file) {
 
         if (is_null($this->plugin_name)) {
             $this->plugin_name = plugin_basename(__FILE__);
