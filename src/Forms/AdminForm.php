@@ -243,6 +243,25 @@ class AdminForm {
      * Checkbox
      ****************************************************************************************************************************/
 
+    public static function checkbox_single__active_key_required($license_key_valid, array $options, string $option_name, string $options_id, $label, bool $is_disabled = false) {
+
+        $disabled = false;
+        if ($license_key_valid) {
+            echo '<div class="lhl__alowed_box">';
+            echo '<p class="lhl__license_notify_text">' . esc_html(self::$active_license_key_text) . '</p>';
+            // $disabled = $disabled;
+        } else {
+            echo '<div class="lhl__restricted_box">';
+            echo '<p class="lhl__license_notify_text">' . esc_html(self::$inactive_license_key_text) . '</p>';
+            $disabled = true;
+        }
+        echo '<br/>';
+
+        self::checkbox_single($options, $option_name, $options_id, $label, $disabled);
+
+        echo '</div>';
+    }
+
     public static function checkbox_single(array $options, string $option_name, string $options_id, $label, bool $is_disabled = false) {
 
         $input_name = "{$option_name}[{$options_id}]";
