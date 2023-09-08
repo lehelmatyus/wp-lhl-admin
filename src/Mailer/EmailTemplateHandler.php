@@ -73,8 +73,9 @@ class EmailTemplateHandler {
     public function set_body($body) {
         if (!empty($body)) {
             $this->body = $this->__validate_body($body);
+        } else {
+            $this->body = "";
         }
-        $this->body = "";
     }
     public function get_body() {
         return $this->body;
@@ -203,7 +204,7 @@ class EmailTemplateHandler {
             $body = implode(',', $body);
             return $body;
         }
-        return $body = $this->__sanitize_text_arguments($body);
+        return $body = sanitize_textarea_field($body);
     }
 
     /**
