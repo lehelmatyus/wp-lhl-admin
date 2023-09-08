@@ -24,31 +24,42 @@ class EmailTemplateHandler {
         ''
     ];
 
-    // set up args that the templates can take
-    private $args = [
+    // set up tokens that the templates can take
+    private $tokens = [
         '[email_first_name]' => '[Empty First Name]',
         '[email_last_name]' => '[Empty last Name]',
     ];
 
-    private $extra_args = [];
-
     private $debug = false;
 
-    public function __construct($to, $subject = '', $body, $args = [], $tamplate_path = '', $debug = false) {
+    public function __construct($to, $subject = '', $body, $tokens = [], $tamplate_path = '', $debug = false) {
 
         $this->set_to($to);
         $this->set_subject($subject);
         $this->set_body($body);
-        $this->set_args($args);
+        $this->set_tokens($tokens);
         $this->set_template_path($tamplate_path);
         $this->set_debug($debug);
 
+        /**
+         * User Tokens in Subject and Body
+         * before we set body and subject
+         */
+        $body = str_replace(array_keys($this->tokens), array_values($this->tokens), $body);
+        $subject = str_replace(array_keys($this->tokens), array_values($this->tokens), $subject);
+
+        $this->set_body($body);
+        $this->set_subject($subject);
+
+        /**
+         * Extend Tokens
+         * make [body] and [email_subject]
+         * as available tokens in the template file
+         */
         // make subject available as a template arg
-        $this->extra_args['[email_subject]'] = $this->subject;
-        // make year available as a template arg
-        $this->extra_args['[email_year]'] = date("Y");
+        $this->tokens['[email_subject]'] = $this->subject;
         // make body available for template as arg
-        $this->__extend_body_to_args();
+        $this->__extend_body_to_tokens();
     }
 
 
@@ -81,13 +92,13 @@ class EmailTemplateHandler {
         return $this->body;
     }
 
-    public function set_args($args) {
-        if (!empty($args)) {
-            $this->args = $this->__validate_args($args);
+    public function set_tokens($tokens) {
+        if (!empty($tokens)) {
+            $this->tokens = $this->__validate_tokens($tokens);
         }
     }
-    public function get_args() {
-        return $this->args;
+    public function get_tokens() {
+        return $this->tokens;
     }
 
     public function set_debug($debug) {
@@ -121,10 +132,11 @@ class EmailTemplateHandler {
             return false;
         }
 
-        $this->args = array_merge($this->args, $this->extra_args);
+        // make year available as a template arg
+        $this->tokens['[email_year]'] = date("Y");
+        // $this->tokens = array_merge($this->tokens, $this->extra_tokens);
         // Replace variables in the template with argument array values
-        // $message = str_replace( array_keys( $this->args ), array_values( $this->args ), $email_template );
-        $message = str_replace(array_keys($this->args), array_values($this->args), $email_template);
+        $message = str_replace(array_keys($this->tokens), array_values($this->tokens), $email_template);
 
         // Set Content-Type and charset, default Content-Type is plaintext
         if ($is_html) {
@@ -148,18 +160,18 @@ class EmailTemplateHandler {
 
     /**
      * Make body available as argument for template [body]
-     * alertanitvely make all body keys available in args such as [introduction], [footer] or whatever is set
+     * alertanitvely make all body keys available in tokens such as [introduction], [footer] or whatever is set
      * alernatively create body keys such as [body_1], [body-2], [body-3] etc
      */
-    private function __extend_body_to_args() {
+    private function __extend_body_to_tokens() {
 
         if (!is_array($this->body)) {
-            $this->extra_args['[body]'] = $this->body;
+            $this->tokens['[body]'] = $this->body;
         } else if ($this->__is_assoc_arr($this->body)) {
-            $this->extra_args = array_merge($this->body, $this->extra_args);
+            $this->tokens = array_merge($this->body, $this->tokens);
         } else {
             foreach ($this->body as $key => $value) {
-                $this->extra_args["[body-{$key}]"];
+                $this->tokens["[body-{$key}]"] = $value;
             }
         }
     }
@@ -180,9 +192,9 @@ class EmailTemplateHandler {
      * Validates all arguments passed 
      * that can be used in a template
      */
-    private function __validate_args($args) {
-        $args = array_map([$this, '__sanitize_text_arguments'], $args);
-        return $args;
+    private function __validate_tokens($tokens) {
+        $tokens = array_map([$this, '__sanitize_text_arguments'], $tokens);
+        return $tokens;
     }
 
     /**
