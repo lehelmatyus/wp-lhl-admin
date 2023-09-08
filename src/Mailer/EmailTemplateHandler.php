@@ -74,7 +74,15 @@ class EmailTemplateHandler {
 
     public function set_subject($subject) {
         if (!empty($subject)) {
-            $this->subject = sanitize_text_field($subject);
+
+            $subject = str_replace(':', '', $subject);
+
+            $trimmedSubject = substr($subject, 0, 44);
+            // Check if the original subject line was longer than 70 characters
+            if (strlen($subject) > 44) {
+                $trimmedSubject .= '...'; // Add ellipsis to indicate truncation
+            }
+            $this->subject = sanitize_text_field($trimmedSubject);
         }
     }
     public function get_subject() {
@@ -139,6 +147,8 @@ class EmailTemplateHandler {
         $message = str_replace(array_keys($this->tokens), array_values($this->tokens), $email_template);
 
         // Set Content-Type and charset, default Content-Type is plaintext
+        $message = filter_var($message, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
         if ($is_html) {
             $headers = array('Content-Type: text/html; charset=UTF-8');
             $result = wp_mail($this->to, $this->subject, $message, $headers);
@@ -147,7 +157,7 @@ class EmailTemplateHandler {
         }
 
         if ($this->debug) {
-            error_log("Sent email to: {$this->to}; Subject: $this->subject");
+            error_log("Sent email to: {$this->to}; Subject: {$this->subject}");
             error_log($message);
         }
 
