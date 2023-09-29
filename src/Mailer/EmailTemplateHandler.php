@@ -211,7 +211,7 @@ class EmailTemplateHandler {
      * Validate template name
      */
     private function __validate_template_path($template_path) {
-        return sanitize_file_name($template_path);
+        return sanitize_text_field($template_path);
     }
 
     /**
