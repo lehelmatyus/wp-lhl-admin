@@ -147,7 +147,14 @@ class EmailTemplateHandler {
         $message = str_replace(array_keys($this->tokens), array_values($this->tokens), $email_template);
 
         // Set Content-Type and charset, default Content-Type is plaintext
-        $message = filter_var($message, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        $message = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $message);
+        // Sanitize the message with htmlspecialchars
+        $message = htmlspecialchars($message, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        // Replace double quotes with HTML entity representation
+        $message = str_replace('&quot;', '"', $message);
+        $message = str_replace('&#039;', "'", $message);
+
 
         if ($is_html) {
             $headers = array('Content-Type: text/html; charset=UTF-8');
@@ -211,7 +218,7 @@ class EmailTemplateHandler {
      * Validate template name
      */
     private function __validate_template_path($template_path) {
-        return sanitize_text_field($template_path);
+        return sanitize_file_name($template_path);
     }
 
     /**
