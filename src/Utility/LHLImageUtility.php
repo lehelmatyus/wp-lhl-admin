@@ -1,13 +1,13 @@
 <?php
 
-namespace WpLHLAdminUi\LHLImage;
+namespace WpLHLAdminUi\Utility;
 
-class LHLImage {
+class LHLImageUtility {
 
     private $img_obj_id;
 
     /**
-     * Constructor for ImageLoader class.
+     * Constructor for LHL_Image class.
      *
      * @param string $img_obj_id The image object ID.
      */
@@ -35,7 +35,7 @@ class LHLImage {
      * @param int    $width                 Width of the image.
      * @param int    $height                Height of the image.
      */
-    public function render_img_tag($size = 'full', $additional_classes = [], $additional_attributes = [], $alt = '', $width = null, $height = null,) {
+    public function render_img_tag($size = 'full', $additional_classes = [], $additional_attributes = [], $alt = '', $width = null, $height = null) {
         if (!$this->__check_id()) return;
 
         $default_class = 'lhl-img';
@@ -81,7 +81,6 @@ class LHLImage {
     public function src($size = 'full') {
         if (!$this->__check_id()) return;
         $image_data = wp_get_attachment_image_src($this->img_obj_id, $size);
-        error_log(print_r($image_data, true));
         if ($image_data) {
             echo $image_data[0]; // Output the URL
         }
@@ -101,6 +100,11 @@ class LHLImage {
         }
     }
 
+    public function returnImageTagSimple($size = 'full') {
+        if (!$this->__check_id()) return;
+        return wp_get_attachment_image($this->img_obj_id, $size);
+    }
+
     /**
      * Check if the image object ID is valid.
      *
@@ -114,3 +118,14 @@ class LHLImage {
         return true;
     }
 }
+
+
+/**
+ * Example usage
+ */
+// $img = new LHLImageUtility(123);
+// $img->img_tag_simple('full');
+// $img->render_img_tag('full', ['img-class'], ['data-attr' => 'value'], 'Alt text', 100, 100);
+// $img->url('full');
+// $img->src('full');
+// $img->srcset('full');

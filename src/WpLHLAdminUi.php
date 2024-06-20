@@ -12,6 +12,7 @@ class WpLHLAdminUi {
      * Enq Admin Styles
      */
     function wp_enqueue_style() {
+        error_log("wp_enqueue_style");
         $uniqKey = "";
         if (!empty($this->uniqKey)) {
             $uniqKey = " " . $this->uniqKey;

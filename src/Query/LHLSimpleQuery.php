@@ -86,12 +86,12 @@ class LHLSimpleQuery {
 // $order = 'ASC';
 
 // // Create an instance of LHLSimpleQuery.
-// $urbi_query = new LHLSimpleQuery($post_type, $number_of_posts, $acf_filters, $order);
+// $lhl_query = new LHLSimpleQuery($post_type, $number_of_posts, $acf_filters, $order);
 
 // // Check if there are posts.
-// if ($urbi_query->have_posts()) {
+// if ($lhl_query->have_posts()) {
 //     // Get the array of post IDs.
-//     $featured_posts = $urbi_query->getPostIds();
+//     $featured_posts = $lhl_query->getPostIds();
 
 //     // Now $featured_posts is an array containing the Post IDs of the latest 3 "member-spotlight" posts with an active "featured" field, ordered by the specified order.
 //     print_r($featured_posts);

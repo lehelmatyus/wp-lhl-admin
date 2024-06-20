@@ -239,6 +239,25 @@ class AdminForm {
         echo '<textarea id="' . esc_attr($options_id) . '" name="' . esc_attr($input_name) . '" rows="' . esc_attr($rows) . '" cols="' . esc_attr($cols) . '"' . esc_attr($disabled_attribute) . '>' . esc_html($value) . '</textarea>';
     }
 
+    public static function textarea__active_key_required($license_key_valid, array $options, string $option_name, string $options_id, bool $is_disabled = false, $rows = 15, $cols = 100) {
+        $disabled = false;
+        if ($license_key_valid) {
+            echo '<div class="lhl__alowed_box">';
+            echo '<p class="lhl__license_notify_text">' . esc_html(self::$active_license_key_text) . '</p>';
+            // $disabled = $disabled;
+        } else {
+            echo '<div class="lhl__restricted_box">';
+            echo '<p class="lhl__license_notify_text">' . esc_html(self::$inactive_license_key_text) . '</p>';
+            $disabled = true;
+        }
+        echo '<br/>';
+
+        self::textarea($options, $option_name, $options_id, $is_disabled, $rows, $cols);
+
+        echo '</div>';
+    }
+
+
     /****************************************************************************************************************************
      * Checkbox
      ****************************************************************************************************************************/
