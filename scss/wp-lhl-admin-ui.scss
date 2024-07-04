@@ -229,6 +229,7 @@
 	}
 
 	.lbrty-license-box__working_msg {
+		min-height: 30px;
 		.lbrty_button_loader {
 			display: none;
 		}
@@ -288,6 +289,33 @@
 	}
 
 	&.lbrty-license-box--activated {
+		.activated_label-inactive {
+			display: none;
+		}
+
+		.activated_label-active {
+			display: inline-block;
+		}
+
+		.lbrty-card-create-account {
+			display: none;
+		}
+		// was active but just got deactivated
+		&.lbrty-license-box--just-deactivated {
+			.activated_label-inactive {
+				display: inline-block;
+			}
+
+			.activated_label-active {
+				display: none;
+			}
+
+			.lbrty-card-create-account {
+				display: block;
+			}
+		}
+	}
+	&.lbrty-license-box--just-activated {
 		.activated_label-inactive {
 			display: none;
 		}

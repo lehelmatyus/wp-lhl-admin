@@ -232,7 +232,7 @@ class AdminForm {
     public static function textarea(array $options, string $option_name, string $options_id, bool $is_disabled = false, $rows = 15, $cols = 100) {
 
         $input_name = "{$option_name}[{$options_id}]";
-        $disabled_attribute = $is_disabled ? " disabled='disabled'" : "";
+        $disabled_attribute = $is_disabled ? " readonly" : "";
         $value = (isset($options[$options_id])) ? $options[$options_id] : '';
 
         // Render the output
@@ -240,15 +240,15 @@ class AdminForm {
     }
 
     public static function textarea__active_key_required($license_key_valid, array $options, string $option_name, string $options_id, bool $is_disabled = false, $rows = 15, $cols = 100) {
-        $disabled = false;
+        $is_disabled = false;
         if ($license_key_valid) {
             echo '<div class="lhl__alowed_box">';
             echo '<p class="lhl__license_notify_text">' . esc_html(self::$active_license_key_text) . '</p>';
-            // $disabled = $disabled;
+            $is_disabled = false;
         } else {
             echo '<div class="lhl__restricted_box">';
             echo '<p class="lhl__license_notify_text">' . esc_html(self::$inactive_license_key_text) . '</p>';
-            $disabled = true;
+            $is_disabled = true;
         }
         echo '<br/>';
 

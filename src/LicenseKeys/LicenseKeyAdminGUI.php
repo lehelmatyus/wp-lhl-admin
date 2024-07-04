@@ -28,8 +28,7 @@ class LicenseKeyAdminGUI {
         string $do_settings_sections = ''
     ) {
 
-        // $this->license_key_valid = $license_key_valid;
-        $this->license_key_valid = true;
+        $this->license_key_valid = $license_key_valid;
         $this->link_to_license = $link_to_license;
         $this->settings_fields = $settings_fields;
         $this->do_settings_sections = $do_settings_sections;
@@ -57,11 +56,8 @@ class LicenseKeyAdminGUI {
             <h2 class="lbrty-license-box__title"><?php _e("License: ", $this->namespace) ?>
 
                 <?php
-                if (!empty($this->license_key_valid)) {
-                    echo '<span class="activated_label-active" style="color: #008000; font-style: italic;">Active</span>';
-                } else {
-                    echo '<span class="activated_label-inactive" style="color: #800000; font-style: italic;">Inactive</span>';
-                }
+                echo '<span class="activated_label-active" style="color: #008000; font-style: italic;">Active</span>';
+                echo '<span class="activated_label-inactive" style="color: #800000; font-style: italic;">Inactive</span>';
                 ?>
 
                 <div class="lbrty-license-box__toggle_holder">
@@ -112,7 +108,7 @@ class LicenseKeyAdminGUI {
             <input type='text' class="regular-text" name='lbrty_settings_general_options[lbrty_license_key]' value='<?php echo $license_key; ?>' <?php echo $readonly; ?> placeholder="Enter your lciense key">
 
             <?php if (!$this->license_key_valid) : ?>
-                <a id="lbrty-license-box-activate-key" class="lbrty_script_button button" href="#" onclick="lbrtyLicenseBoxActivateKey(event)">Activate Key</a>
+                <button id="lbrty-license-box-activate-key" class="lbrty_script_button button" href="#" onclick="lbrtyLicenseBoxActivateKey(event)">Activate Key</button>
                 <div class="lbrty-license-box__working_msg">
                     <span class="lbrty_button_loader">
                         <img class="load_spinner" src="/wp-includes/images/spinner.gif" />
@@ -120,7 +116,7 @@ class LicenseKeyAdminGUI {
                     <span class="lbrty-license-box-activate-key__msg lbrty-license-box__working_msg_txt" data-waitmsg="Activating Script running..."></span>
                 </div>
             <?php else : ?>
-                <a id="lbrty-license-box-deactivate-key" class="lbrty_script_button button" href="#" onclick="lbrtyLicenseBoxDeactivateKey(event)">Deactivate Key</a>
+                <button id="lbrty-license-box-deactivate-key" class="lbrty_script_button button" href="#" onclick="lbrtyLicenseBoxDeactivateKey(event)">Deactivate Key</button>
                 <div class="lbrty-license-box__working_msg">
                     <span class="lbrty_button_loader">
                         <img class="load_spinner" src="/wp-includes/images/spinner.gif" />
@@ -134,8 +130,30 @@ class LicenseKeyAdminGUI {
     }
 
     public static function wp_enqueue_license_js() {
-        error_log("wp_enqueue_style");
         $uniqKey = "";
         wp_enqueue_script('wp-lhl-admin-ui-styles' . esc_attr($uniqKey),  plugin_dir_url(dirname(__FILE__)) . '../js/LicenseKeyAdminGUI.js');
     }
 }
+
+
+
+/**
+ * Example Usage
+ */
+/**
+ * $link_to_license = new LHLLinkModel(
+ *    __('Get a License Key.', 'tgen-template-generator'),
+ *    'https://lehelmatyus.com/tgen-template-generator-for-tnew?utm_source=plugin&utm_medium=license&utm_campaign=tgen-template-generator-for-tnew',
+ * );
+
+ * $licenes_gui = new LicenseKeyAdminGUI(
+ *    $this->license_key_valid,
+ *    $link_to_license,
+ *    __("Don't have a license? Obtain one now to unlock all features and receive full support.", 'tgen-template-generator'),
+ *    'tgen-template-generator'
+ * );
+ * $licenes_gui->__license_card_display();
+ * 
+ * 
+ * 
+ */

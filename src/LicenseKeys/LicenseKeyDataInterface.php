@@ -28,14 +28,13 @@ interface LicenseKeyDataInterface {
      */
     public function get_name_for_license_key();
     /**
+     * Name of array key in the option where license key hash is stored
+     */
+    public function get_name_for_license_key_hash();
+    /**
      * Name of the option where license date is stored
      */
-    public function get_name_for_options_licensedate_bundle();
-    /**
-     * Name of array key in the option where license date is stored
-     */
     public function get_name_for_license_key_date();
-    
     /**
      * Url where the license can be purchased
      */
@@ -53,5 +52,4 @@ interface LicenseKeyDataInterface {
      * Version of the plugin
      */
     public function get_version();
-
 }
